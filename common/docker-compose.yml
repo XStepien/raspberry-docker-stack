@@ -1,0 +1,33 @@
+version: '3'
+
+# Services
+services:
+
+  # HTTP Reverse proxy
+  reverse-proxy:
+    container_name: traefik
+    image: traefik:2.2
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.useBindPortIP=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.address=:80"
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAINE}`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/opt/traefik.yaml:/opt/traefik.yaml
+
+# Network
+networks:
+  default:
+    external:
+      name: nas_stack
