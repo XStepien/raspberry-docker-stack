@@ -2,26 +2,50 @@ version: '3'
 
 # Services
 services:
-  # Deluge
-  deluge:
-    container_name: deluge
-    image: linuxserver/deluge
+  # qBittorrent
+  qbittorrent:
+    image: linuxserver/qbittorrent
+    container_name: qbittorrent
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.deluge.rule=Host(`deluge.${DOMAINE}`)"
-      - "traefik.http.routers.deluge.entrypoints=web, websecure"
-      - "traefik.http.routers.deluge.service=deluge"
-      - "traefik.http.services.deluge.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.${DOMAINE}`)"
+      - "traefik.http.routers.qbittorrent.entrypoints=web, websecure"
+      - "traefik.http.routers.qbittorrent.service=qbittorrent"
+      - "traefik.http.services.qbittorrent.loadbalancer.passhostheader=true"
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - UMASK_SET=022 #optional
-      - DELUGE_LOGLEVEL=error #optional
-    restart: unless-stopped
+      - UMASK_SET=022
+      - WEBUI_PORT=8080
     volumes:
-      - ${DIR_CONFIG_DELUGE}:/config
+      - ${DIR_CONFIG_QBITTORRENT}:/config
       - ${DIR_DOWNLOAD}:/downloads
+    ports:
+      - 6881:6881
+      - 6881:6881/udp
+      - 8080:8080
+    restart: unless-stopped
+  # Deluge
+  # deluge:
+  #   container_name: deluge
+  #   image: linuxserver/deluge
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.deluge.rule=Host(`deluge.${DOMAINE}`)"
+  #     - "traefik.http.routers.deluge.entrypoints=web, websecure"
+  #     - "traefik.http.routers.deluge.service=deluge"
+  #     - "traefik.http.services.deluge.loadbalancer.passhostheader=true"
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #     - TZ=${TZ}
+  #     - UMASK_SET=022 #optional
+  #     - DELUGE_LOGLEVEL=error #optional
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ${DIR_CONFIG_DELUGE}:/config
+  #     - ${DIR_DOWNLOAD}:/downloads
   
   # Emby
   emby:
