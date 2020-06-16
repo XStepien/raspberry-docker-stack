@@ -21,31 +21,15 @@ services:
     volumes:
       - ${DIR_CONFIG_QBITTORRENT}:/config
       - ${DIR_DOWNLOAD}:/downloads
+      - ${DIR_SERIES}:/data/series
+      - ${DIR_MOVIES}:/data/movies
+      - ${DIR_GAMES}:/data/games
+      - ${DIR_OTHER}:/data/other
     ports:
       - 6881:6881
       - 6881:6881/udp
       - 8080:8080
     restart: unless-stopped
-  # Deluge
-  # deluge:
-  #   container_name: deluge
-  #   image: linuxserver/deluge
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.deluge.rule=Host(`deluge.${DOMAINE}`)"
-  #     - "traefik.http.routers.deluge.entrypoints=web, websecure"
-  #     - "traefik.http.routers.deluge.service=deluge"
-  #     - "traefik.http.services.deluge.loadbalancer.passhostheader=true"
-  #   environment:
-  #     - PUID=${PUID}
-  #     - PGID=${PGID}
-  #     - TZ=${TZ}
-  #     - UMASK_SET=022 #optional
-  #     - DELUGE_LOGLEVEL=error #optional
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${DIR_CONFIG_DELUGE}:/config
-  #     - ${DIR_DOWNLOAD}:/downloads
   
   # Emby
   emby:
@@ -71,7 +55,6 @@ services:
       - ${DIR_CONFIG_EMBY}:/config
       - ${DIR_SERIES}:/data/series
       - ${DIR_MOVIES}:/data/movies
-      - ${DIR_GAMES}:/data/games
       - ${DIR_OTHER}:/data/other
       - ${DIR_TRANSCODE}:/transcode #optional
 
